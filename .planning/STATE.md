@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 ## Current Position
 
 Phase: 1 of 6 (Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-29 — Roadmap created
+Plan: 0 of 2 in current phase
+Status: Ready to execute (docs refreshed 2026-07-02, Phase 1 planned)
+Last activity: 2026-07-02 — Doc refresh: model/version pins updated, 4 requirement gaps closed, Phase 1 plans written
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -46,19 +46,22 @@ Recent decisions affecting current work:
 - [Roadmap]: Phases 3 and 4 can run in parallel (both depend on Phase 2 only)
 - [Research]: Consumer voice rescoped to public discourse (Reddit, Twitter/X) — no direct Nykaa/Amazon scraping
 - [Research]: Fluid Compute must be enabled in Phase 1 before any API work — project-killer if missed
+- [Refresh 2026-07-02]: Model pin moved to claude-sonnet-5 (sonnet-4-20250514 deprecated, retires 2026-06-15); web_search tool moved to web_search_20260209
+- [Refresh 2026-07-02]: CRON_SECRET protection pulled from Phase 6 into Phase 2 (route is exposed from first deploy)
+- [Refresh 2026-07-02]: 4 new requirements — NEWS-07 dedup, INFR-05 failure alert, INFR-06 cost tracking, INFR-07 PPT retention (v1: 24 → 28)
 
 ### Pending Todos
 
-None yet.
+- Ben to decide: keep or defer the 4 v1.5 deferral candidates (DASH-05 search, DASH-06 timeline, WEEK-05 PPT customization, WEEK-06 trend tracking) — flagged in REQUIREMENTS.md, kept in v1 until decided
 
 ### Blockers/Concerns
 
 - Phase 2 is highest risk: Claude web_search quality for India cosmetics is unproven, needs prompt iteration
 - Phase 5: pptxgenjs has known silent corruption issues (color format, object reuse)
-- DASH-06 (competitor timeline) and WEEK-05 (PPT customization) flagged by research as deferral candidates but kept in v1
+- Sonnet 5 API differences vs the original Sonnet 4 plan: adaptive thinking on by default (control cost with effort/disabled), sampling params rejected — reflected in STACK.md
 
 ## Session Continuity
 
-Last session: 2026-03-29
-Stopped at: Roadmap created, ready to plan Phase 1
-Resume file: None
+Last session: 2026-07-02
+Stopped at: Docs refreshed, Phase 1 plans written (01-01 scaffold+deploy, 01-02 schema+storage), ready to execute Phase 1
+Resume file: .planning/plans/01-01-scaffold-deploy.md

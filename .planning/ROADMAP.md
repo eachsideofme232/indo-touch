@@ -40,13 +40,15 @@ Plans:
 ### Phase 2: Intelligence Engine
 **Goal**: The system collects high-quality, Laneige-relevant India market intelligence across 5 categories and stores it in Supabase
 **Depends on**: Phase 1
-**Requirements**: NEWS-01, NEWS-02, NEWS-03, NEWS-04, NEWS-05, NEWS-06
+**Requirements**: NEWS-01, NEWS-02, NEWS-03, NEWS-04, NEWS-05, NEWS-06, NEWS-07, INFR-06
 **Success Criteria** (what must be TRUE):
   1. Calling /api/scan returns news items across all 5 categories (market, channel, consumer, competitor, regulatory) with source URLs that resolve to real articles
   2. Each news item has an impact score (high/medium/low) and a Laneige-specific strategic insight that is contextually relevant (not generic)
   3. Consumer voice items are collected from public discourse (Reddit, Twitter/X) with sentiment classification (positive/negative/neutral)
   4. User can trigger a manual scan from the dashboard and see fresh results appear in Supabase within minutes
-  5. Claude API costs per scan stay under $1 (max_uses: 10 per category, Sonnet 4 only)
+  5. Claude API costs per scan stay under $1 (max_uses: 10 per category, Sonnet 5 only) and each scan logs tokens/searches/estimated cost (INFR-06)
+  6. Running /api/scan twice in a row does not produce duplicate news items — already-stored articles are skipped (NEWS-07)
+  7. /api/scan rejects requests without a valid CRON_SECRET (route is protected from its first deploy, not deferred to Phase 6)
 **Plans**: TBD
 
 Plans:
@@ -74,11 +76,12 @@ Plans:
 ### Phase 4: Notifications
 **Goal**: The user receives daily intelligence via email and Telegram without opening the dashboard
 **Depends on**: Phase 2
-**Requirements**: NOTF-01, NOTF-02
+**Requirements**: NOTF-01, NOTF-02, INFR-05
 **Success Criteria** (what must be TRUE):
   1. User receives a daily email digest via Resend with top news items formatted for quick scanning
   2. User receives a Telegram message containing only high-impact items with clickable source links
   3. Notification failures do not abort or delay the scan pipeline (decoupled via internal fetch)
+  4. A failed scan or report pipeline sends a Telegram alert with the failure reason — the system never fails silently (INFR-05)
 **Plans**: TBD
 
 Plans:
@@ -88,13 +91,14 @@ Plans:
 ### Phase 5: Weekly Reports
 **Goal**: Division leadership receives a professional 7-slide PPT every week summarizing India market intelligence
 **Depends on**: Phase 2, Phase 4
-**Requirements**: WEEK-01, WEEK-02, WEEK-03, WEEK-04, WEEK-05, WEEK-06
+**Requirements**: WEEK-01, WEEK-02, WEEK-03, WEEK-04, WEEK-05, WEEK-06, INFR-07
 **Success Criteria** (what must be TRUE):
   1. Calling /api/weekly generates a 7-slide PPT covering the week's intelligence with cross-category pattern detection
   2. Generated PPT opens correctly in Microsoft PowerPoint with no corruption (colors, bullets, layout intact)
   3. PPT is uploaded to Supabase Storage and downloadable via a persistent link
   4. User can browse an archive of past weekly reports on the /weekly page and download any past PPT
   5. User can see trend tracking over time showing sentiment shifts and topic frequency changes across weeks
+  6. A storage retention policy prunes PPT files beyond the retention window so the bucket stays within the free tier (INFR-07)
 **Plans**: TBD
 
 Plans:
@@ -109,7 +113,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Daily scan fires automatically at 07:00 KST (UTC 22:00 previous day) via Vercel Cron and completes within timeout
   2. Weekly PPT generation fires automatically every Friday at 06:00 KST via Vercel Cron and completes within timeout
-  3. CRON_SECRET validation protects all pipeline routes from unauthorized access
+  3. CRON_SECRET validation (implemented in Phase 2) is verified against the production deployment for all pipeline routes
   4. System runs for at least 3 consecutive days with no manual intervention and produces expected outputs (news items, notifications, or weekly report)
 **Plans**: TBD
 
