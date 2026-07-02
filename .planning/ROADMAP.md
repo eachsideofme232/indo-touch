@@ -31,11 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Supabase Storage bucket for PPT files exists and accepts uploads
   4. Vercel Fluid Compute is enabled and functions can run beyond 10 seconds (maxDuration = 300 verified)
   5. All environment variables are wired in Vercel and .env.local
-**Plans**: TBD
+**Plans**: 2 (planned 2026-07-02)
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01: Scaffold & Deploy — Next.js 16 scaffold, fonts/theme, Vercel deploy, Fluid Compute verification, env vars (.planning/plans/01-01-scaffold-deploy.md)
+- [ ] 01-02: Supabase Schema & Storage — 3 tables + RLS + dedup unique index + reports bucket (.planning/plans/01-02-supabase-schema.md)
 
 ### Phase 2: Intelligence Engine
 **Goal**: The system collects high-quality, Laneige-relevant India market intelligence across 5 categories and stores it in Supabase
@@ -129,7 +129,7 @@ Note: Phases 3 and 4 can execute in parallel (both depend on Phase 2 only).
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/2 | Planned | - |
 | 2. Intelligence Engine | 0/TBD | Not started | - |
 | 3. Daily Dashboard | 0/TBD | Not started | - |
 | 4. Notifications | 0/TBD | Not started | - |
