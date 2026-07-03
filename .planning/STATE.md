@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-29)
 ## Current Position
 
 Phase: 1 of 6 (Foundation)
-Plan: 0 of 2 in current phase
-Status: Ready to execute (docs refreshed 2026-07-02, Phase 1 planned)
-Last activity: 2026-07-02 — Doc refresh: model/version pins updated, 4 requirement gaps closed, Phase 1 plans written
+Plan: 2 of 2 executed (deploy steps pending — see below)
+Status: Code + schema done; Vercel deploy/Fluid Compute is the remaining manual step
+Last activity: 2026-07-02 — Phase 1 executed: Next.js 16 scaffold + theme + /api/health, Supabase project created (evyhsnfmpgvouhxbufgs, ap-northeast-2) with schema/RLS/reports bucket applied
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -53,6 +53,9 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 - Ben to decide: keep or defer the 4 v1.5 deferral candidates (DASH-05 search, DASH-06 timeline, WEEK-05 PPT customization, WEEK-06 trend tracking) — flagged in REQUIREMENTS.md, kept in v1 until decided
+- **Manual (Ben)**: Vercel 프로젝트 생성 + main 연결, Project Settings > Functions에서 Fluid Compute 활성화, 프로덕션에서 /api/health 15초 응답 확인
+- **Manual (Ben)**: .env.local + Vercel 환경변수 등록 (.env.example 참고; Supabase URL/keys는 대시보드 project evyhsnfmpgvouhxbufgs에서)
+- Supabase dedup 스모크 테스트 (unique 제약 동작 확인) — MCP 연결 불안정으로 미실행, Phase 2 시작 시 수행
 
 ### Blockers/Concerns
 
@@ -63,5 +66,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-07-02
-Stopped at: Docs refreshed, Phase 1 plans written (01-01 scaffold+deploy, 01-02 schema+storage), ready to execute Phase 1
-Resume file: .planning/plans/01-01-scaffold-deploy.md
+Stopped at: Phase 1 code/schema executed and pushed. Vercel deploy + env vars are manual next steps, then Phase 2 (Intelligence Engine)
+Resume file: .planning/plans/01-02-supabase-schema.md (verification checklist)
