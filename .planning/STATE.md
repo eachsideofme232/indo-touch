@@ -49,6 +49,7 @@ Recent decisions affecting current work:
 - [Refresh 2026-07-02]: Model pin moved to claude-sonnet-5 (sonnet-4-20250514 deprecated, retires 2026-06-15); web_search tool moved to web_search_20260209
 - [Refresh 2026-07-02]: CRON_SECRET protection pulled from Phase 6 into Phase 2 (route is exposed from first deploy)
 - [Refresh 2026-07-02]: 4 new requirements — NEWS-07 dedup, INFR-05 failure alert, INFR-06 cost tracking, INFR-07 PPT retention (v1: 24 → 28)
+- [Supabase 2026-07-02]: digda = **Tarae 프로젝트**(wbnlgsianlabbsozsvqo, Auth 사용하는 SaaS). indo-touch(evyhsnfmpgvouhxbufgs)와 **별개 프로젝트로 물리적 완전 격리**(DB/키/Auth/스토리지 분리). 조직 W2Q는 **Pro 플랜**($25/월). 단 indo-touch 신규 프로젝트 get_cost 견적은 $0/월 → 별도 프로젝트라도 추가 비용 없을 가능성 → 실제 청구는 대시보드 확인 필요. 통합할 경우 anon/service key 공유가 핵심 리스크(특히 내 테이블의 anon read 정책이 digda 공개 anon 키로 노출됨). 안전 통합안: 전용 `indo` 스키마(API 미노출) + anon 정책 제거 + 대시보드는 service_role 서버 렌더. 상세는 research/SUPABASE_SHARING.md
 
 ### Pending Todos
 
