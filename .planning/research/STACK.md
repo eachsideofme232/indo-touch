@@ -2,6 +2,7 @@
 
 **Domain:** Automated market intelligence system (news aggregation + AI analysis + PPT generation)
 **Researched:** 2026-03-29
+**Re-verified:** 2026-07-02 — version pins refreshed against npm/Anthropic docs. Key change: `claude-sonnet-4-20250514` is deprecated (retires 2026-06-15); replaced with `claude-sonnet-5`.
 **Confidence:** HIGH
 
 > Stack is LOCKED by project owner. This research validates versions, documents best practices,
@@ -22,23 +23,23 @@
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Supabase JS | 2.100.x | Postgres client + Storage | Latest v2 with full TypeScript support. Handles both DB queries and file storage (PPT uploads). Service role key for server-side cron operations, anon key for client dashboard. |
+| Supabase JS | 2.110.x | Postgres client + Storage | Latest v2 with full TypeScript support. Handles both DB queries and file storage (PPT uploads). Service role key for server-side cron operations, anon key for client dashboard. |
 | Supabase (Platform) | -- | Managed Postgres + Storage + Auth | Free tier sufficient for single-user app. Row-level security optional but recommended even for single user. Storage for PPT files with signed URLs. |
 
 ### AI & Intelligence
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| @anthropic-ai/sdk | 0.80.x | Claude API client | Official TypeScript SDK. Direct access to Messages API with tool use (web_search). |
-| Claude Sonnet 4 (claude-sonnet-4-20250514) | -- | News analysis + summarization | Cost-effective for daily scans. $3/MTok input, $15/MTok output. Good balance of quality and speed for market intelligence tasks. |
-| web_search tool | web_search_20250305 | Real-time news gathering | Server-side tool -- Anthropic executes the search, returns results with citations. $10/1,000 searches. Use max_uses to cap costs. |
+| @anthropic-ai/sdk | 0.110.x | Claude API client | Official TypeScript SDK. Direct access to Messages API with tool use (web_search). |
+| Claude Sonnet 5 (claude-sonnet-5) | -- | News analysis + summarization | Cost-effective for daily scans. $3/MTok input, $15/MTok output (intro pricing $2/$10 through 2026-08-31). Successor to claude-sonnet-4-20250514, which is deprecated and retires 2026-06-15. API notes: adaptive thinking runs by default when `thinking` is omitted (set `{type: "disabled"}` for cheap extraction calls, or leave adaptive + `output_config: {effort: "low"}`); non-default `temperature`/`top_p`/`top_k` are rejected. |
+| web_search tool | web_search_20260209 | Real-time news gathering | Server-side tool -- Anthropic executes the search, returns results with citations. Dynamic filtering variant (supported on Sonnet 5) filters results before they hit context, saving tokens. $10/1,000 searches. Use max_uses to cap costs. |
 
 ### Notifications
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Resend | 6.9.x | Email delivery | Simple API, excellent Next.js integration. Free tier: 100 emails/day (more than enough for daily + weekly reports). React Email compatible for templating. |
-| grammy | 1.41.x | Telegram Bot API | TypeScript-first, best type safety of all Telegram libraries. 1.4M weekly downloads. Much better DX than node-telegram-bot-api for simple send-message use cases. |
+| Resend | 6.16.x | Email delivery | Simple API, excellent Next.js integration. Free tier: 100 emails/day (more than enough for daily + weekly reports). React Email compatible for templating. |
+| grammy | 1.44.x | Telegram Bot API | TypeScript-first, best type safety of all Telegram libraries. 1.4M weekly downloads. Much better DX than node-telegram-bot-api for simple send-message use cases. |
 
 ### PPT Generation
 
@@ -58,7 +59,7 @@
 | Library | Version | Purpose | When to Use |
 |---------|---------|---------|-------------|
 | @react-email/components | latest | Email templates | Building DailyDigest.tsx and WeeklyReport.tsx email templates with React components |
-| zod | 3.x | Runtime validation | Validating Claude API responses, API route inputs, and environment variables |
+| zod | 4.x | Runtime validation | Validating Claude API responses, API route inputs, and environment variables |
 | date-fns | 4.x | Date manipulation | Week number calculations, date range formatting for reports, KST timezone handling |
 | lucide-react | latest | Icons | Dashboard UI icons (impact indicators, category icons, navigation) |
 
@@ -94,15 +95,15 @@ npx shadcn@latest init
 
 ### Claude API web_search Tool
 
-Use `web_search_20250305` for the daily scan. Configuration:
+Use `web_search_20260209` (dynamic filtering, supported on Sonnet 5) for the daily scan. Configuration:
 
 ```typescript
 // lib/claude.ts
 const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-20250514",
+  model: "claude-sonnet-5",
   max_tokens: 4096,
   tools: [{
-    type: "web_search_20250305",
+    type: "web_search_20260209",
     name: "web_search",
     max_uses: 10, // Cap at 10 searches per category scan
     user_location: {
@@ -203,14 +204,14 @@ Note: For this project, grammy is used only for sending messages (not receiving)
 | pptxgenjs (PPT) | officegen, python-pptx | officegen is unmaintained. python-pptx requires Python runtime. pptxgenjs is the only viable JS option. |
 | date-fns (dates) | dayjs, luxon | dayjs if you prefer moment-like API. luxon for heavy timezone work. date-fns is tree-shakeable and sufficient here. |
 | Supabase (DB) | PlanetScale, Neon | If you need MySQL (PlanetScale) or want separate DB from storage. Supabase bundles Postgres + Storage + optional Auth in one service. |
-| web_search_20250305 | web_search_20260209 (dynamic filtering) | Use 20260209 if you have Opus 4.6 budget and need code-based filtering of search results. For Sonnet-based daily scans, 20250305 is sufficient and cheaper. |
+| web_search_20260209 (chosen) | web_search_20250305 (basic) | 20260209 dynamic filtering is now supported on Sonnet 5 at no extra tool cost and reduces context-token spend by filtering results before they reach the model. Fall back to 20250305 only if 20260209 misbehaves during Phase 2 prompt iteration. |
 
 ## What NOT to Use
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| node-telegram-bot-api | Weaker TypeScript support, lower weekly downloads than grammy, less active maintenance | grammy 1.41.x |
-| Telegraf | Messy TS migration from v3 to v4, grammy was specifically built to replace it | grammy 1.41.x |
+| node-telegram-bot-api | Weaker TypeScript support, lower weekly downloads than grammy, less active maintenance | grammy 1.44.x |
+| Telegraf | Messy TS migration from v3 to v4, grammy was specifically built to replace it | grammy 1.44.x |
 | officegen | Unmaintained, last publish years ago | pptxgenjs 4.0.1 |
 | Puppeteer/Playwright for scraping | Overkill and won't work in Vercel serverless (binary dependencies too large) | Claude web_search tool handles news gathering natively |
 | Custom web scraping | Fragile, requires maintenance, blocked by many sites | Claude web_search tool -- Anthropic handles the scraping |
@@ -224,11 +225,11 @@ Note: For this project, grammy is used only for sending messages (not receiving)
 |-----------|-----------------|-------|
 | Next.js 16.2 | React 19, Tailwind CSS 4.x | Turbopack is default bundler. React 19 is required. |
 | Next.js 16.2 | Node.js 18.18+ | Node 18.18 minimum. Vercel serverless uses Node 20 by default. |
-| @supabase/supabase-js 2.100.x | Node.js 20+ | Dropped Node 18 support at v2.79.0. Vercel serverless runs Node 20, so this is fine. |
+| @supabase/supabase-js 2.110.x | Node.js 20+ | Dropped Node 18 support at v2.79.0. Vercel serverless runs Node 20, so this is fine. |
 | shadcn/ui CLI v4 | Tailwind CSS 4.x, Next.js 16.x | Uses CSS variables for theming. Supports both Radix and Base UI primitives. |
-| Resend 6.9.x | Next.js 16.x | Works as simple API client. No framework-specific integration needed. |
+| Resend 6.16.x | Next.js 16.x | Works as simple API client. No framework-specific integration needed. |
 | pptxgenjs 4.0.1 | Node.js 18+ | Pure JS, no native dependencies. Works in Vercel serverless. |
-| grammy 1.41.x | Node.js 18+ | Pure TypeScript. No native dependencies. |
+| grammy 1.44.x | Node.js 18+ | Pure TypeScript. No native dependencies. |
 
 ## Cost Estimate (Monthly, Hobby Plan)
 

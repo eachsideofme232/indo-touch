@@ -23,6 +23,8 @@ The India subsidiary manager always has current, Laneige-relevant India cosmetic
 - [ ] Weekly 7-slide PPT auto-generation for division leadership
 - [ ] Email + Telegram notification delivery
 - [ ] Cron-based automation (daily scan + weekly report)
+- [ ] News deduplication across daily scans (same article must not reappear day after day)
+- [ ] Pipeline failure alerting via Telegram (unattended system must not fail silently)
 
 ### Out of Scope
 
@@ -49,7 +51,7 @@ The India subsidiary manager always has current, Laneige-relevant India cosmetic
 - **Design**: Editorial style, Saffron (#E8732A) + Teal (#1A6B8A) + Warm White (#FFFDF9), Playfair Display + DM Sans
 - **Language**: Korean comments, English code, TypeScript strict mode
 - **Deploy**: Vercel with Vercel Cron Jobs
-- **AI model**: claude-sonnet-4-20250514 with web_search tool for news collection
+- **AI model**: claude-sonnet-5 with web_search tool (web_search_20260209) for news collection — updated 2026-07-02; the original pin claude-sonnet-4-20250514 is deprecated and retires 2026-06-15
 
 ## Key Decisions
 
@@ -59,6 +61,8 @@ The India subsidiary manager always has current, Laneige-relevant India cosmetic
 | Single-user system (no auth) | Only one user (Ben), simplifies architecture | — Pending |
 | Supabase for DB + storage | PPT file storage + structured data in one platform | — Pending |
 | pptxgenjs for PPT generation | Server-side JS PPT generation, no external service needed | — Pending |
+| Model pin moved to claude-sonnet-5 (2026-07-02) | sonnet-4-20250514 deprecated (retires 2026-06-15); Sonnet 5 same sticker price, supports web_search_20260209 dynamic filtering | — Pending |
+| CRON_SECRET route protection pulled into Phase 2 (2026-07-02) | /api/scan is publicly reachable from first deploy; unprotected calls burn API budget | — Pending |
 
 ---
-*Last updated: 2026-03-29 after initialization*
+*Last updated: 2026-07-02 after doc refresh (model/version pins, requirement gaps)*

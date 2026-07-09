@@ -3,6 +3,7 @@
 **Project:** Indo Touch — India Market Intelligence System
 **Domain:** Automated market intelligence / cron-driven data pipeline with read-only dashboard
 **Researched:** 2026-03-29
+**Re-verified:** 2026-07-02 — model pin moved to `claude-sonnet-5` (sonnet-4-20250514 deprecated), web_search tool moved to `web_search_20260209`, library versions refreshed. See STACK.md for current pins.
 **Confidence:** HIGH
 
 ## Executive Summary
@@ -17,14 +18,14 @@ The biggest risk is not technical complexity but content quality: Claude web_sea
 
 ### Recommended Stack
 
-The locked stack is well-validated by official documentation. All chosen libraries are current stable versions with no deprecated APIs. Key version notes: Next.js 16.2 with Turbopack as default bundler requires React 19; Tailwind CSS 4.x uses CSS-first configuration with no tailwind.config.js; shadcn/ui CLI v4 targets Tailwind 4.x. The Claude web_search tool identifier is `web_search_20250305` (not a generic string) and requires `user_location` to be set to India for better search relevance.
+The locked stack is well-validated by official documentation. All chosen libraries are current stable versions with no deprecated APIs. Key version notes: Next.js 16.2 with Turbopack as default bundler requires React 19; Tailwind CSS 4.x uses CSS-first configuration with no tailwind.config.js; shadcn/ui CLI v4 targets Tailwind 4.x. The Claude web_search tool identifier is `web_search_20260209` (dynamic filtering variant, supported on Sonnet 5) and requires `user_location` to be set to India for better search relevance.
 
 Supporting libraries not in CLAUDE.md but needed: `zod` for validating Claude API response shapes, `date-fns` for KST timezone handling and week number calculations, `@react-email/components` for email templates, `lucide-react` for dashboard icons.
 
 **Core technologies:**
 - Next.js 16.2 (App Router): Full-stack framework — latest stable with Turbopack, required for App Router pattern
 - Supabase JS 2.100.x: Postgres + Storage client — bundles DB and file storage, dual client pattern (service role for API routes, anon for dashboard)
-- @anthropic-ai/sdk 0.80.x: Claude API client — web_search_20250305 tool, Sonnet 4 model, cap at 10 searches/category
+- @anthropic-ai/sdk 0.110.x: Claude API client — web_search_20260209 tool, Sonnet 5 model (claude-sonnet-5), cap at 10 searches/category
 - grammy 1.41.x: Telegram Bot API — TypeScript-first, send-only usage (no polling/webhook needed)
 - Resend 6.9.x: Email delivery — 100 emails/day free tier is sufficient for 1 daily + 1 weekly
 - pptxgenjs 4.0.1: PPT generation — only viable JS option, pure Node.js, no binary dependencies
@@ -78,7 +79,7 @@ Indo Touch is a cron-driven data pipeline with a read-only dashboard. Two operat
 
 2. **Claude web_search returns stale/generic India content** — Force source URL + publication date in every prompt. Target specific Indian publications in query strings (Economic Times, Mint, Business Standard). Add a `confidence` field to news_items. Budget 40% of Phase 2 time on prompt iteration.
 
-3. **Runaway Claude API costs** — Set `max_uses: 10` on web_search tool. Use Sonnet 4 (not Opus). Set Anthropic spend alerts. Track daily costs programmatically. Estimate: ~$15-25/month for full pipeline.
+3. **Runaway Claude API costs** — Set `max_uses: 10` on web_search tool. Use Sonnet 5 (not Opus). Set Anthropic spend alerts. Track daily costs programmatically. Estimate: ~$15-25/month for full pipeline.
 
 4. **pptxgenjs silent PPT corruption** — Never use "#" prefix in hex colors ("E8732A" not "#E8732A"). Never reuse PptxGenJS instances across slides. Use `bullet: true` instead of unicode bullet characters. Test output in actual PowerPoint (not Google Slides).
 
@@ -98,7 +99,7 @@ Based on research, the CLAUDE.md 6-phase plan maps cleanly to the dependency cha
 ### Phase 2: News Scan API (Core Intelligence Engine)
 **Rationale:** This is the make-or-break phase. Without working data collection, nothing downstream functions. The hardest work is prompt engineering, not code structure.
 **Delivers:** Working `/api/scan` route that collects news across 5 categories and consumer voices, stores to Supabase, validates output quality.
-**Uses:** `@anthropic-ai/sdk` with `web_search_20250305` tool, `zod` for response validation, sequential category scan pattern with per-category error isolation
+**Uses:** `@anthropic-ai/sdk` with `web_search_20260209` tool, `zod` for response validation, sequential category scan pattern with per-category error isolation
 **Avoids:** Pitfall 2 (content quality), Pitfall 3 (runaway costs), Pitfall 7 (consumer voice scope), Pitfall 8 (India content gaps)
 **Research flag:** Needs research-phase — Claude web_search behavior for India cosmetics is unproven. Budget time for prompt iteration.
 

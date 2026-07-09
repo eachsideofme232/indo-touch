@@ -160,9 +160,9 @@ for (const category of categories) {
 // lib/claude.ts
 export async function scanCategory(category: NewsCategory): Promise<NewsItem[]> {
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-5',
     max_tokens: 4096,
-    tools: [{ type: 'web_search_20250305' }],
+    tools: [{ type: 'web_search_20260209' }],
     messages: [{
       role: 'user',
       content: buildCategoryPrompt(category)
@@ -322,7 +322,7 @@ try {
 
 **Why bad:** Claude's web_search is a server-side tool -- Claude handles the search internally. You send ONE request with web_search tool enabled, Claude performs searches as needed, and returns the synthesized result. No polling needed.
 
-**Instead:** Single `messages.create()` call with `tools: [{ type: 'web_search_20250305' }]`.
+**Instead:** Single `messages.create()` call with `tools: [{ type: 'web_search_20260209' }]`.
 
 ## Vercel-Specific Constraints
 

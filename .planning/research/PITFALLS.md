@@ -75,10 +75,10 @@ Mistakes that cause rewrites or major issues.
 - Token counts per scan request exceed 50K input tokens
 
 **Prevention:**
-- Use `claude-sonnet-4-20250514` (not Opus) for scans -- 5x cheaper and sufficient for structured extraction
+- Use `claude-sonnet-5` (not Opus) for scans -- cheaper and sufficient for structured extraction. (Updated 2026-07-02: claude-sonnet-4-20250514 is deprecated, retires 2026-06-15.)
 - Set `max_tokens` on responses to cap output
 - Design prompts that explicitly say "Use at most 2 web searches per category"
-- Use `budget_tokens` parameter if available to constrain search tool usage
+- Note (Sonnet 5): `budget_tokens` is removed -- use `output_config: {effort: "low"}` or `thinking: {type: "disabled"}` to constrain thinking spend; `max_uses` on the web_search tool caps searches
 - Track daily API spend programmatically (Anthropic Usage API) and alert if exceeding threshold
 - Cache results: if scan fails partway, don't re-scan categories already completed today
 - Consider whether 5 categories daily is necessary -- start with 3 (market, competitor, regulatory) and add others weekly
